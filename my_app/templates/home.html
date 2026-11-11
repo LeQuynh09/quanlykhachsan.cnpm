@@ -1,0 +1,109 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Danh sách phòng - MESP Hotel{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-6">
+        <h2 class="fw-bold text-dark mb-0"><i class="fa-solid fa-bed me-2 text-primary"></i>Danh mục phòng</h2>
+        <p class="text-secondary small mb-0">Hệ thống phòng nghỉ tiện nghi, giá niêm yết minh bạch chuẩn quy định</p>
+    </div>
+    <div class="col-md-6 text-md-end mt-3 mt-md-0">
+        <span class="badge bg-light text-dark border px-3 py-2"><i class="fa-solid fa-list-check me-1 text-primary"></i>Tổng số: <strong>{{ total }}</strong> phòng</span>
+    </div>
+</div>
+
+<div class="card mb-4 bg-white p-3">
+    <form method="GET" action="/" class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label small fw-semibold text-secondary">Từ khóa tìm kiếm</label>
+            <input type="text" name="kw" class="form-control form-control-sm" placeholder="Mã phòng, đặc điểm..." value="{{ kw or '' }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small fw-semibold text-secondary">Loại phòng</label>
+            <select name="MaLoaiPhong" class="form-select form-select-sm">
+                <option value="">-- Tất cả loại phòng --</option>
+                {% for lp in ds_loai_phong %}
+                <option value="{{ lp.MaLoaiPhong }}" {% if MaLoaiPhong == lp.MaLoaiPhong %}selected{% endif %}>{{ lp.LoaiPhong }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small fw-semibold text-secondary">Tình trạng</label>
+            <select name="TinhTrang" class="form-select form-select-sm">
+                <option value="">-- Tất cả tình trạng --</option>
+                <option value="FR" {% if TinhTrang == 'FR' %}selected{% endif %}>Còn trống</option>
+                <option value="IU" {% if TinhTrang == 'IU' %}selected{% endif %}>Đang sử dụng</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary btn-sm flex-fill"><i class="fa-solid fa-filter me-1"></i>Lọc phòng</button>
+            <a href="/" class="btn btn-outline-secondary btn-sm"><i class="fa-solid fa-rotate-left"></i></a>
+        </div>
+    </form>
+</div>
+
+{% if not Phong %}
+<div class="alert alert-warning text-center py-5 shadow-sm">
+    <i class="fa-solid fa-circle-exclamation fa-2x mb-2 text-warning"></i>
+    <p class="mb-0 fw-semibold">Không tìm thấy phòng phù hợp với tiêu chí tìm kiếm!</p>
+</div>
+{% endif %}
+
+<div class="row g-4">
+    {% for p in Phong %}
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="card h-100 overflow-hidden">
+            <div class="position-relative">
+                <img src="{{ p.HinhAnh or 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=500' }}"
+                     class="card-img-top object-fit-cover"
+                     style="height: 180px;"
+                     alt="Phòng {{ p.MaPhong }}">
+                <span class="position-absolute top-0 end-0 m-2 badge {% if p.TinhTrang == 'FR' %}badge-free{% else %}badge-busy{% endif %} px-2 py-1">
+                    {% if p.TinhTrang == 'FR' %}Còn trống{% else %}Đang ở{% endif %}
+                </span>
+            </div>
+            <div class="card-body d-flex flex-direction-column flex-column justify-content-between p-3">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <h5 class="card-title fw-bold text-dark mb-0">Phòng {{ p.MaPhong }}</h5>
+                        <span class="badge bg-light text-primary border">{{ p.LoaiPhong.LoaiPhong }}</span>
+                    </div>
+                    <p class="text-danger fw-bold fs-5 mb-2">{{ "{:,.0f}".format(p.LoaiPhong.DonGia) }} <small class="text-secondary fs-6 fw-normal">đ/ngày</small></p>
+                    <p class="card-text text-secondary small mb-3 text-truncate">{{ p.GhiChu or 'Đầy đủ tiện nghi máy lạnh, wifi, nước nóng' }}</p>
+                </div>
+
+                <div class="d-flex gap-2">
+                    {% if p.TinhTrang == 'FR' %}
+                    <a href="/datphong?ma_phong={{ p.MaPhong }}" class="btn btn-primary btn-sm flex-fill fw-semibold">
+                        <i class="fa-solid fa-calendar-check me-1"></i>Đặt ngay
+                    </a>
+                    <button class="btn btn-outline-primary btn-sm" onclick="addToCart({{ p.MaPhong }}, {{ p.MaLoaiPhong }})" title="Thêm vào giỏ">
+                        <i class="fa-solid fa-cart-plus"></i>
+                    </button>
+                    {% else %}
+                    <button class="btn btn-secondary btn-sm flex-fill" disabled>Đang sử dụng</button>
+                    {% endif %}
+                    <a href="/chitiet/{{ p.MaPhong }}" class="btn btn-outline-secondary btn-sm" title="Xem chi tiết">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if page_num > 1 %}
+<nav class="mt-5">
+    <ul class="pagination justify-content-center">
+        {% for i in range(1, page_num + 1) %}
+        <li class="page-item {% if page == i %}active{% endif %}">
+            <a class="page-link" href="/?page={{ i }}{% if kw %}&kw={{ kw }}{% endif %}{% if MaLoaiPhong %}&MaLoaiPhong={{ MaLoaiPhong }}{% endif %}{% if TinhTrang %}&TinhTrang={{ TinhTrang }}{% endif %}">{{ i }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</nav>
+{% endif %}
+
+{% endblock %}

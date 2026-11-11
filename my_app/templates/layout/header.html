@@ -1,0 +1,78 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand text-primary fw-bold" href="/">
+            <i class="fa-solid fa-hotel me-2"></i>MESP HOTEL
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/"><i class="fa-solid fa-house me-1"></i>Trang chủ</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fa-solid fa-door-open me-1"></i>Loại phòng
+                    </a>
+                    <ul class="dropdown-menu shadow">
+                        <li><a class="dropdown-item" href="/">Tất cả các phòng</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        {% for lp in ds_loai_phong %}
+                        <li><a class="dropdown-item" href="/?MaLoaiPhong={{ lp.MaLoaiPhong }}">{{ lp.LoaiPhong }} ({{ "{:,.0f}".format(lp.DonGia) }} đ)</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/cart">
+                        <i class="fa-solid fa-cart-shopping me-1"></i>Giỏ đặt phòng
+                        <span class="badge bg-danger rounded-pill" id="cartCounter">{{ cart_stats.total_quantity }}</span>
+                    </a>
+                </li>
+                {% if current_user.is_authenticated and current_user.get_urole() == 'NhanVien' %}
+                <li class="nav-item">
+                    <a class="nav-link text-warning fw-semibold" href="/nhanvien">
+                        <i class="fa-solid fa-user-tie me-1"></i>Kênh Lễ tân
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+
+            <form class="d-flex me-3" action="/" method="GET">
+                <div class="input-group">
+                    <input class="form-control form-control-sm" type="search" name="kw" placeholder="Tìm số phòng, ghi chú..." value="{{ kw or '' }}">
+                    <button class="btn btn-primary btn-sm" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+            </form>
+
+            <ul class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fa-solid fa-circle-user me-1 text-info"></i>{{ current_user.name if (current_user.name is defined and current_user.name) else current_user.username }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                        {% if current_user.get_urole() == 'NhanVien' and current_user.is_admin %}
+                        <li><a class="dropdown-item text-primary" href="/admin"><i class="fa-solid fa-chart-line me-2"></i>Trang quản trị (Admin)</a></li>
+                        {% endif %}
+                        {% if current_user.get_urole() == 'NhanVien' %}
+                        <li><a class="dropdown-item" href="/nhanvien"><i class="fa-solid fa-bell-concierge me-2"></i>Nghiệp vụ lễ tân</a></li>
+                        {% endif %}
+                        <li><a class="dropdown-item" href="/danhgia"><i class="fa-solid fa-star me-2"></i>Gửi đánh giá phòng</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="/dangxuat"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Đăng xuất</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="btn btn-outline-light btn-sm me-2" href="/dangnhap"><i class="fa-solid fa-right-to-bracket me-1"></i>Đăng nhập</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary btn-sm" href="/register"><i class="fa-solid fa-user-plus me-1"></i>Đăng ký</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

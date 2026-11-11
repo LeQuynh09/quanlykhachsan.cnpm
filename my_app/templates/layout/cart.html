@@ -1,0 +1,83 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Giỏ đặt phòng - MESP Hotel{% endblock %}
+
+{% block content %}
+<div class="card p-4 shadow-sm border-0 mb-4 bg-white">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+        <h3 class="fw-bold text-dark mb-0"><i class="fa-solid fa-cart-shopping me-2 text-primary"></i>Danh sách phòng đã chọn</h3>
+        <a href="/" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-plus me-1"></i>Thêm phòng khác</a>
+    </div>
+
+    {% if not cart %}
+    <div class="alert alert-light text-center py-5 border">
+        <i class="fa-solid fa-cart-arrow-down fa-3x text-secondary mb-3"></i>
+        <h5 class="fw-bold text-secondary">Giỏ đặt phòng của bạn đang trống!</h5>
+        <p class="text-secondary small mb-3">Hãy chọn cho mình phòng nghỉ phù hợp từ danh mục phòng của khách sạn.</p>
+        <a href="/" class="btn btn-primary px-4 fw-semibold"><i class="fa-solid fa-arrow-left me-1"></i>Xem danh sách phòng</a>
+    </div>
+    {% else %}
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered table-hover align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Mã phòng</th>
+                    <th>Loại phòng</th>
+                    <th>Đơn giá</th>
+                    <th style="width: 20%;">Ngày nhận phòng</th>
+                    <th style="width: 15%;">Số ngày ở</th>
+                    <th style="width: 15%;">Số khách</th>
+                    <th style="width: 10%;">Xóa</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart.values() %}
+                <tr id="Phong{{ item.MaPhong }}">
+                    <td class="fw-bold">Phòng {{ item.MaPhong }}</td>
+                    <td><span class="badge bg-primary">{{ item.LoaiPhong }}</span></td>
+                    <td class="fw-semibold text-danger">{{ "{:,.0f}".format(item.DonGia) }} đ</td>
+                    <td>
+                        <input type="date" class="form-control form-control-sm text-center"
+                               value="{{ item.NgayBatDau }}"
+                               onchange="updateCartItem({{ item.MaPhong }}, this.value, {{ item.quantity }}, {{ item.SoLuong }})">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm text-center"
+                               min="1" value="{{ item.quantity }}"
+                               onchange="updateCartItem({{ item.MaPhong }}, '{{ item.NgayBatDau }}', this.value, {{ item.SoLuong }})">
+                    </td>
+                    <td>
+                        <select class="form-select form-select-sm text-center"
+                                onchange="updateCartItem({{ item.MaPhong }}, '{{ item.NgayBatDau }}', {{ item.quantity }}, this.value)">
+                            <option value="1" {% if item.SoLuong == 1 %}selected{% endif %}>1 người</option>
+                            <option value="2" {% if item.SoLuong == 2 %}selected{% endif %}>2 người</option>
+                            <option value="3" {% if item.SoLuong == 3 %}selected{% endif %}>3 người</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-outline-danger btn-sm" onclick="deleteCartItem({{ item.MaPhong }})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row align-items-center bg-light p-3 rounded-3 g-3">
+        <div class="col-md-7">
+            <p class="mb-1 text-secondary small">Tổng số phòng: <strong id="cart-quantity" class="text-dark">{{ cart_stats.total_quantity }} phòng</strong></p>
+            <h5 class="mb-0 text-dark fw-bold">Tổng tiền ước tính: <span id="cart-amount" class="text-danger fs-4 fw-bold">{{ "{:,.0f}".format(cart_stats.total_amount) }} đ</span></h5>
+        </div>
+        <div class="col-md-5 text-md-end">
+            {% for item in cart.values() %}
+            <a href="/datphong?ma_phong={{ item.MaPhong }}" class="btn btn-primary btn-lg px-4 fw-bold">
+                <i class="fa-solid fa-calendar-check me-2"></i>Điền phiếu đặt phòng
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
