@@ -1,0 +1,108 @@
+{% extends 'layout/layoutNV/baseNV.html' %}
+
+{% block title %}Bàn làm việc Lễ tân - MESP Hotel{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card p-3 bg-white shadow-sm border-start border-success border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-secondary small mb-1 fw-semibold">PHÒNG CÒN TRỐNG</p>
+                    <h2 class="fw-bold text-success mb-0">{{ phong_trong }}</h2>
+                </div>
+                <div class="p-3 bg-success-subtle text-success rounded-circle">
+                    <i class="fa-solid fa-door-open fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 bg-white shadow-sm border-start border-danger border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-secondary small mb-1 fw-semibold">PHÒNG ĐANG SỬ DỤNG</p>
+                    <h2 class="fw-bold text-danger mb-0">{{ phong_thue }}</h2>
+                </div>
+                <div class="p-3 bg-danger-subtle text-danger rounded-circle">
+                    <i class="fa-solid fa-bed fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 bg-white shadow-sm border-start border-primary border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-secondary small mb-1 fw-semibold">HỢP ĐỒNG ĐANG LƯU TRÚ</p>
+                    <h2 class="fw-bold text-primary mb-0">{{ ds_thue|length }}</h2>
+                </div>
+                <div class="p-3 bg-primary-subtle text-primary rounded-circle">
+                    <i class="fa-solid fa-receipt fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4 bg-white shadow-sm mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-list-check me-2 text-primary"></i>Danh sách hợp đồng thuê phòng đang lưu trú</h5>
+        <div class="d-flex gap-2">
+            <a href="/thuephong" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus me-1"></i>Lập phiếu thuê mới</a>
+            <a href="/hoadon" class="btn btn-success btn-sm"><i class="fa-solid fa-file-invoice-dollar me-1"></i>Thanh toán trả phòng</a>
+        </div>
+    </div>
+
+    {% if not ds_thue %}
+    <div class="alert alert-light text-center py-4 border">
+        <i class="fa-solid fa-circle-check text-success fa-2x mb-2"></i>
+        <p class="text-secondary mb-0">Hiện không có phòng nào đang lưu trú cần thanh toán.</p>
+    </div>
+    {% else %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Mã HĐ</th>
+                    <th>Phòng</th>
+                    <th>Khách đại diện</th>
+                    <th>CMND</th>
+                    <th>Ngày nhận phòng</th>
+                    <th>Số khách</th>
+                    <th>Loại khách</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ct in ds_thue %}
+                <tr>
+                    <td class="fw-bold">#{{ ct.MaHopDong }}</td>
+                    <td><span class="badge bg-primary">Phòng {{ ct.MaPhong }}</span> ({{ ct.phong.LoaiPhong.LoaiPhong }})</td>
+                    <td class="fw-semibold">{{ ct.HoTen }}</td>
+                    <td>{{ ct.CMND }}</td>
+                    <td>{{ ct.NgayBatDau.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td>{{ ct.SoLuong }} người</td>
+                    <td>
+                        {% if ct.CoKhachNuocNgoai or ct.MaLoaiKhach == 2 %}
+                        <span class="badge bg-warning text-dark"><i class="fa-solid fa-earth-americas me-1"></i>Nước ngoài</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Nội địa</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <a href="/phieuthuephong/{{ ct.MaHopDong }}" class="btn btn-outline-info btn-sm me-1" title="Xem phiếu thuê">
+                            <i class="fa-solid fa-file-lines"></i>
+                        </a>
+                        <a href="/hoadon?mahopdong={{ ct.MaHopDong }}" class="btn btn-success btn-sm">
+                            <i class="fa-solid fa-receipt me-1"></i>Thanh toán
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

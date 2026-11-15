@@ -1,0 +1,52 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Đăng nhập - MESP Hotel{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-md-5">
+        <div class="card p-4 shadow-sm border-0">
+            <div class="text-center mb-4">
+                <div class="p-3 bg-primary-subtle text-primary rounded-circle d-inline-block mb-2">
+                    <i class="fa-solid fa-lock fa-2x"></i>
+                </div>
+                <h3 class="fw-bold text-dark">Đăng nhập hệ thống</h3>
+                <p class="text-secondary small">Dành cho Khách hàng, Lễ tân và Quản trị viên</p>
+            </div>
+
+            {% if err_msg %}
+            <div class="alert alert-danger d-flex align-items-center py-2" role="alert">
+                <i class="fa-solid fa-circle-exclamation me-2"></i>
+                <div>{{ err_msg }}</div>
+            </div>
+            {% endif %}
+
+            <form action="/login" method="POST">
+                <div class="mb-3">
+                    <label for="username" class="form-label fw-semibold">Tên đăng nhập</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                        <input type="text" name="username" class="form-control" placeholder="Nhập username..." id="username" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-semibold">Mật khẩu</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                        <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu..." id="password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold mb-3">
+                    <i class="fa-solid fa-right-to-bracket me-1"></i>Đăng nhập
+                </button>
+            </form>
+
+            <div class="text-center mt-3 small">
+                Chưa có tài khoản? <a href="/register" class="fw-semibold text-primary">Đăng ký ngay</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

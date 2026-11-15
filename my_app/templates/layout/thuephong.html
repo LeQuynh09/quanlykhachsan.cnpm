@@ -1,0 +1,194 @@
+{% extends 'layout/layoutNV/baseNV.html' %}
+
+{% block title %}Lập phiếu thuê phòng - MESP Hotel{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card p-3 bg-white shadow-sm mb-4">
+            <h5 class="fw-bold text-dark mb-2"><i class="fa-solid fa-magnifying-glass me-2 text-primary"></i>Tra cứu phòng đã đặt trước</h5>
+            <p class="text-secondary small">Nhập họ tên, CMND hoặc SĐT khách để tìm phiếu đặt phòng:</p>
+            <form method="GET" action="/thuephong" class="mb-3">
+                <div class="input-group">
+                    <input type="text" name="kw" class="form-control" placeholder="Tên khách hoặc CMND..." value="{{ kw or '' }}" required>
+                    <button class="btn btn-primary" type="submit"><i class="fa-solid fa-search"></i></button>
+                </div>
+            </form>
+
+            {% if kw %}
+                <h6 class="fw-semibold text-secondary small text-uppercase">Kết quả tìm kiếm:</h6>
+                {% if not dat_phong_found %}
+                <div class="alert alert-light text-center py-3 border small">
+                    Không tìm thấy phiếu đặt phòng phù hợp!
+                </div>
+                {% else %}
+                <div class="list-group">
+                    {% for dp in dat_phong_found %}
+                    <a href="/thuephong?from_dat_phong={{ dp.MaDatPhong }}" class="list-group-item list-group-item-action {% if dp_selected and dp_selected.MaDatPhong == dp.MaDatPhong %}active{% endif %} p-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">{{ dp.HoTen }}</span>
+                            <span class="badge bg-primary">Phòng {{ dp.MaPhong }}</span>
+                        </div>
+                        <small class="d-block text-secondary">CMND: {{ dp.CMND }} | {{ dp.NgayNhan.strftime('%d/%m/%Y') }}</small>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <div class="card p-3 bg-white shadow-sm border-start border-warning border-4">
+            <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-triangle-exclamation me-1 text-warning"></i>Quy định thuê phòng</h6>
+            <ul class="text-secondary small ps-3 mb-0">
+                <li>Khách hàng gồm 2 loại: <strong>Nội địa</strong> và <strong>Nước ngoài</strong>.</li>
+                <li>Mỗi phòng chỉ được ở <strong>tối đa {{ quy_dinh.SoKhachTrongPhong }} khách</strong>.</li>
+                <li>Đơn giá phòng chuẩn dành cho tối đa 2 khách; khách thứ 3 phụ thu {{ (quy_dinh.TyLePhuThu * 100)|int }}%.</li>
+                <li>Phòng có khách nước ngoài nhân hệ số {{ quy_dinh.HeSoKhachNuocNgoai }}.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card p-4 bg-white shadow-sm">
+            <div class="border-bottom pb-3 mb-3">
+                <h4 class="fw-bold text-dark mb-1"><i class="fa-solid fa-file-signature me-2 text-primary"></i>LẬP PHIẾU THUÊ PHÒNG</h4>
+                <p class="text-secondary small mb-0">Nhập thông tin thuê trực tiếp hoặc nhận phòng đã đặt trước</p>
+            </div>
+
+            {% if err_msg %}
+            <div class="alert alert-danger d-flex align-items-center py-2" role="alert">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                <div>{{ err_msg }}</div>
+            </div>
+            {% endif %}
+
+            {% if dp_selected %}
+            <div class="alert alert-info py-2 small d-flex justify-content-between align-items-center mb-3">
+                <span><i class="fa-solid fa-circle-check me-1"></i>Đang nhận phòng từ phiếu đặt: <strong>#{{ dp_selected.MaDatPhong }} ({{ dp_selected.HoTen }})</strong></span>
+                <a href="/thuephong" class="btn btn-outline-info btn-sm py-0">Hủy chọn</a>
+            </div>
+            {% endif %}
+
+            <form method="POST" action="/thuephong">
+                {% if dp_selected %}
+                <input type="hidden" name="ma_dat_phong" value="{{ dp_selected.MaDatPhong }}">
+                {% endif %}
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Phòng thuê <span class="text-danger">*</span></label>
+                        <select name="ma_phong" class="form-select" required>
+                            {% if dp_selected %}
+                            <option value="{{ dp_selected.MaPhong }}" selected>Phòng {{ dp_selected.MaPhong }} (Phòng đã đặt trước)</option>
+                            {% else %}
+                            <option value="">-- Chọn phòng còn trống --</option>
+                            {% for p in phong_trong %}
+                            <option value="{{ p.MaPhong }}">Phòng {{ p.MaPhong }} - {{ p.LoaiPhong.LoaiPhong }} ({{ "{:,.0f}".format(p.LoaiPhong.DonGia) }} đ)</option>
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Ngày nhận phòng</label>
+                        <input type="date" name="ngay_thue" class="form-control" value="{{ dp_selected.NgayNhan if dp_selected else '' }}" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Số ngày ở dự kiến</label>
+                        <input type="number" name="so_ngay" class="form-control" min="1" value="1" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Họ tên khách đại diện <span class="text-danger">*</span></label>
+                        <input type="text" name="ho_ten" class="form-control" placeholder="Nguyễn Văn A" value="{{ dp_selected.HoTen if dp_selected else '' }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Số CMND/CCCD <span class="text-danger">*</span></label>
+                        <input type="text" name="cmnd" class="form-control" placeholder="079..." value="{{ dp_selected.CMND if dp_selected else '' }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Loại khách hàng</label>
+                        <select name="ma_loai_khach" class="form-select">
+                            <option value="1" {% if dp_selected and dp_selected.MaLoaiKhach == 1 %}selected{% endif %}>Nội địa</option>
+                            <option value="2" {% if dp_selected and dp_selected.MaLoaiKhach == 2 %}selected{% endif %}>Nước ngoài (nhân hệ số {{ quy_dinh.HeSoKhachNuocNgoai }})</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Số lượng khách (tối đa {{ quy_dinh.SoKhachTrongPhong }}) <span class="text-danger">*</span></label>
+                        <select name="so_luong" id="so_luong_thue" class="form-select" onchange="renderGuestRowsThue(this.value)">
+                            <option value="1">1 khách</option>
+                            <option value="2" {% if dp_selected and dp_selected.SoLuongKhach == 2 %}selected{% endif %}>2 khách (chuẩn đơn giá)</option>
+                            <option value="3" {% if dp_selected and dp_selected.SoLuongKhach == 3 %}selected{% endif %}>3 khách (phụ thu {{ (quy_dinh.TyLePhuThu * 100)|int }}%)</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Địa chỉ</label>
+                        <input type="text" name="dia_chi" class="form-control" placeholder="Địa chỉ thường trú..." value="{{ dp_selected.DiaChi if dp_selected else '' }}" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="fw-bold text-dark mb-2">Danh sách khách hàng trong phòng:</h6>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm text-center align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 8%;">STT</th>
+                                    <th style="width: 32%;">Khách hàng</th>
+                                    <th style="width: 20%;">Loại khách</th>
+                                    <th style="width: 20%;">CMND</th>
+                                    <th style="width: 20%;">Địa chỉ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="guestRowsThue">
+                                <tr>
+                                    <td>1</td>
+                                    <td><input type="text" name="khach_ten_1" class="form-control form-control-sm" placeholder="Họ tên khách 1" value="{{ dp_selected.HoTen if dp_selected else '' }}" required></td>
+                                    <td>
+                                        <select name="khach_loai_1" class="form-select form-select-sm">
+                                            <option value="1">Nội địa</option>
+                                            <option value="2">Nước ngoài</option>
+                                        </select>
+                                    </td>
+                                    <td><input type="text" name="khach_cmnd_1" class="form-control form-control-sm" placeholder="Số CMND" value="{{ dp_selected.CMND if dp_selected else '' }}" required></td>
+                                    <td><input type="text" name="khach_diachi_1" class="form-control form-control-sm" placeholder="Địa chỉ" value="{{ dp_selected.DiaChi if dp_selected else '' }}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="/nhanvien" class="btn btn-outline-secondary">Hủy bỏ</a>
+                    <button type="submit" class="btn btn-primary px-4 fw-semibold"><i class="fa-solid fa-check me-1"></i>Xác nhận lập phiếu thuê</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function renderGuestRowsThue(num) {
+        const tbody = document.getElementById('guestRowsThue');
+        const count = parseInt(num);
+        tbody.innerHTML = '';
+        for (let i = 1; i <= count; i++) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${i}</td>
+                <td><input type="text" name="khach_ten_${i}" class="form-control form-control-sm" placeholder="Họ tên khách ${i}" required></td>
+                <td>
+                    <select name="khach_loai_${i}" class="form-select form-select-sm">
+                        <option value="1">Nội địa</option>
+                        <option value="2">Nước ngoài</option>
+                    </select>
+                </td>
+                <td><input type="text" name="khach_cmnd_${i}" class="form-control form-control-sm" placeholder="Số CMND" required></td>
+                <td><input type="text" name="khach_diachi_${i}" class="form-control form-control-sm" placeholder="Địa chỉ"></td>
+            `;
+            tbody.appendChild(tr);
+        }
+    }
+</script>
+{% endblock %}

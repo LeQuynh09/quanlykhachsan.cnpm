@@ -1,0 +1,80 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Đăng ký tài khoản - MESP Hotel{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-md-6">
+        <div class="card p-4 shadow-sm border-0">
+            <div class="text-center mb-4">
+                <div class="p-3 bg-primary-subtle text-primary rounded-circle d-inline-block mb-2">
+                    <i class="fa-solid fa-user-plus fa-2x"></i>
+                </div>
+                <h3 class="fw-bold text-dark">Đăng ký tài khoản khách hàng</h3>
+                <p class="text-secondary small">Trở thành thành viên để nhận ưu đãi và đặt phòng nhanh chóng</p>
+            </div>
+
+            {% if err_msg %}
+            <div class="alert alert-danger d-flex align-items-center py-2" role="alert">
+                <i class="fa-solid fa-circle-exclamation me-2"></i>
+                <div>{{ err_msg }}</div>
+            </div>
+            {% endif %}
+
+            <form action="/register" method="POST">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Tên đăng nhập <span class="text-danger">*</span></label>
+                        <input type="text" name="username" class="form-control" placeholder="Tên đăng nhập..." required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Họ và tên <span class="text-danger">*</span></label>
+                        <input type="text" name="HoTen" class="form-control" placeholder="Nguyễn Văn A" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Mật khẩu <span class="text-danger">*</span></label>
+                        <input type="password" name="password" class="form-control" placeholder="Mật khẩu..." required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                        <input type="password" name="confirm-password" class="form-control" placeholder="Nhập lại mật khẩu..." required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Số CMND/CCCD <span class="text-danger">*</span></label>
+                        <input type="text" name="CMND" class="form-control" placeholder="079..." required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Số điện thoại <span class="text-danger">*</span></label>
+                        <input type="text" name="SDT" class="form-control" placeholder="090..." required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Loại khách hàng</label>
+                        <select name="LoaiKhach" class="form-select">
+                            {% for lk in ds_loai_khach %}
+                            <option value="{{ lk.MaLoaiKhach }}">{{ lk.LoaiKhach }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Địa chỉ</label>
+                        <input type="text" name="DiaChi" class="form-control" placeholder="Địa chỉ thường trú..." required>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                            <i class="fa-solid fa-check me-1"></i>Đăng ký ngay
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="text-center mt-3 small">
+                Đã có tài khoản? <a href="/dangnhap" class="fw-semibold text-primary">Đăng nhập tại đây</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

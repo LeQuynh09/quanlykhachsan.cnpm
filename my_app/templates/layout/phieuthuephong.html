@@ -1,0 +1,105 @@
+{% extends 'layout/layoutNV/baseNV.html' %}
+
+{% block title %}Phiếu thuê phòng #{{ ct.MaHopDong }} - MESP Hotel{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card p-4 shadow-sm border-0 bg-white" id="printableRental">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                <div>
+                    <h5 class="fw-bold text-dark mb-0">MESP HOTEL</h5>
+                    <p class="text-secondary small mb-0">Mã phiếu thuê / Hợp đồng: <strong>#{{ ct.MaHopDong }}</strong></p>
+                </div>
+                <div>
+                    <span class="badge bg-success px-3 py-2">
+                        <i class="fa-solid fa-key me-1"></i>Đã nhận phòng
+                    </span>
+                </div>
+            </div>
+
+            <div class="text-center mb-4">
+                <h3 class="fw-bold text-dark mb-1">PHIẾU THUÊ PHÒNG</h3>
+                <p class="text-secondary small mb-0">Thời điểm lập phiếu: {{ ct.NgayBatDau.strftime('%d/%m/%Y %H:%M') }}</p>
+            </div>
+
+            <div class="row g-3 mb-4 p-3 bg-light rounded-3">
+                <div class="col-md-6">
+                    <p class="mb-1 text-secondary small">Các phòng thuê:</p>
+                    <h5 class="fw-bold text-primary mb-0">Phòng {{ ct.MaPhong }} ({{ ct.phong.LoaiPhong.LoaiPhong }})</h5>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1 text-secondary small">Đơn giá niêm yết:</p>
+                    <h6 class="fw-bold text-danger mb-0">{{ "{:,.0f}".format(ct.phong.LoaiPhong.DonGia) }} đ/ngày</h6>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1 text-secondary small">Ngày nhận phòng:</p>
+                    <h6 class="fw-bold text-dark mb-0">{{ ct.NgayBatDau.strftime('%d/%m/%Y') }}</h6>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1 text-secondary small">Ngày trả phòng dự kiến:</p>
+                    <h6 class="fw-bold text-dark mb-0">{{ ct.NgayTraPhongDuKien.strftime('%d/%m/%Y') if ct.NgayTraPhongDuKien else 'Chưa xác định' }} ({{ ct.SoNgayODuKien }} ngày)</h6>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1 text-secondary small">Khách đại diện:</p>
+                    <h6 class="fw-bold text-dark mb-0">{{ ct.HoTen }}</h6>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1 text-secondary small">Số lượng khách trong phòng:</p>
+                    <h6 class="fw-bold text-dark mb-0">{{ ct.SoLuong }} người</h6>
+                </div>
+            </div>
+
+            <h6 class="fw-bold text-dark mb-2">Chi tiết danh sách khách lưu trú trong phòng:</h6>
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered table-sm text-center align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 8%;">STT</th>
+                            <th style="width: 32%;">Khách hàng</th>
+                            <th style="width: 20%;">Loại khách</th>
+                            <th style="width: 20%;">CMND</th>
+                            <th style="width: 20%;">Địa chỉ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if ds_khach %}
+                            {% for k in ds_khach %}
+                            <tr>
+                                <td>{{ k.stt }}</td>
+                                <td class="text-start fw-semibold">{{ k.ho_ten }}</td>
+                                <td>{{ 'Nước ngoài' if k.loai_khach|string == '2' else 'Nội địa' }}</td>
+                                <td>{{ k.cmnd }}</td>
+                                <td class="text-start">{{ k.dia_chi }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>1</td>
+                                <td class="text-start fw-semibold">{{ ct.HoTen }}</td>
+                                <td>{{ 'Nước ngoài' if ct.MaLoaiKhach == 2 else 'Nội địa' }}</td>
+                                <td>{{ ct.CMND }}</td>
+                                <td class="text-start">{{ ct.DiaChi }}</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="p-3 bg-light-subtle border rounded-3 mb-4">
+                <p class="text-secondary small mb-0">
+                    <i class="fa-solid fa-circle-info me-1 text-primary"></i><strong>Quy định:</strong> Có 2 loại khách (nội địa và nước ngoài), mỗi phòng được ở tối đa 3 khách. Đơn giá phòng dành cho 2 khách, nếu khách thứ 3 phụ thu thêm 25%. Nếu phòng có khách nước ngoài thì nhân hệ số 1.5 khi lập hóa đơn thanh toán.
+                </p>
+            </div>
+
+            <div class="d-flex justify-content-between d-print-none">
+                <a href="/nhanvien" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left me-1"></i>Về bàn lễ tân</a>
+                <div class="d-flex gap-2">
+                    <button onclick="window.print()" class="btn btn-outline-primary"><i class="fa-solid fa-print me-1"></i>In phiếu thuê</button>
+                    <a href="/hoadon?mahopdong={{ ct.MaHopDong }}" class="btn btn-success"><i class="fa-solid fa-receipt me-1"></i>Thanh toán trả phòng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
