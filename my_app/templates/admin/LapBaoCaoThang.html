@@ -1,0 +1,126 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Báo cáo doanh thu theo tháng{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+        <h3 class="fw-bold text-dark"><i class="fa fa-bar-chart text-primary"></i> BÁO CÁO DOANH THU THEO THÁNG</h3>
+        <span class="badge bg-primary fs-6">Tháng {{ data.thang }}/{{ data.nam }}</span>
+    </div>
+
+    <div class="card p-3 mb-4 shadow-sm bg-white">
+        <form method="GET" action="/admin/statsview/" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Chọn Tháng:</label>
+                <select name="thang" class="form-control">
+                    {% for m in range(1, 13) %}
+                    <option value="{{ m }}" {% if data.thang == m %}selected{% endif %}>Tháng {{ m }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Chọn Năm:</label>
+                <input type="number" name="nam" class="form-control" value="{{ data.nam }}" min="2020" max="2030">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-filter"></i> Xem báo cáo</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            <div class="card p-3 shadow-sm bg-white h-100">
+                <h5 class="fw-bold text-dark mb-3">Bảng số liệu doanh thu tháng {{ data.thang }}/{{ data.nam }}</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>STT</th>
+                                <th>Loại phòng</th>
+                                <th>Doanh thu (VNĐ)</th>
+                                <th>Số lượt thuê</th>
+                                <th>Tỷ lệ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data.chi_tiet %}
+                            <tr>
+                                <td>{{ row.stt }}</td>
+                                <td class="fw-semibold">{{ row.loai_phong }}</td>
+                                <td class="text-end fw-bold text-danger">{{ "{:,.0f}".format(row.doanh_thu) }} đ</td>
+                                <td>{{ row.luot_thue }}</td>
+                                <td><span class="badge bg-info text-dark">{{ row.ty_le }}%</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-secondary fw-bold">
+                                <td colspan="2" class="text-end">TỔNG DOANH THU:</td>
+                                <td class="text-end text-danger fs-5">{{ "{:,.0f}".format(data.tong_doanh_thu) }} đ</td>
+                                <td>-</td>
+                                <td>100%</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 mb-4">
+            <div class="card p-3 shadow-sm bg-white h-100">
+                <h5 class="fw-bold text-dark mb-3">Biểu đồ doanh thu (Chart.js)</h5>
+                <div style="position: relative; height: 320px;">
+                    <canvas id="chartDoanhThu"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = [{% for r in data.chi_tiet %}"{{ r.loai_phong }}",{% endfor %}];
+    const revenueData = [{% for r in data.chi_tiet %}{{ r.doanh_thu }},{% endfor %}];
+
+    const ctx = document.getElementById('chartDoanhThu').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Doanh thu (VNĐ)',
+                data: revenueData,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString('vi-VN') + ' đ';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

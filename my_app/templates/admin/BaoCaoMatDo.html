@@ -1,0 +1,109 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Báo cáo mật độ sử dụng phòng{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+        <h3 class="fw-bold text-dark"><i class="fa fa-pie-chart text-success"></i> BÁO CÁO MẬT ĐỘ SỬ DỤNG PHÒNG</h3>
+        <span class="badge bg-success fs-6">Tháng {{ data.thang }}/{{ data.nam }}</span>
+    </div>
+
+    <div class="card p-3 mb-4 shadow-sm bg-white">
+        <form method="GET" action="/admin/matdoview/" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Chọn Tháng:</label>
+                <select name="thang" class="form-control">
+                    {% for m in range(1, 13) %}
+                    <option value="{{ m }}" {% if data.thang == m %}selected{% endif %}>Tháng {{ m }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Chọn Năm:</label>
+                <input type="number" name="nam" class="form-control" value="{{ data.nam }}" min="2020" max="2030">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-success"><i class="fa fa-filter"></i> Xem báo cáo</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            <div class="card p-3 shadow-sm bg-white h-100">
+                <h5 class="fw-bold text-dark mb-3">Bảng mật độ sử dụng phòng tháng {{ data.thang }}/{{ data.nam }}</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>STT</th>
+                                <th>Phòng</th>
+                                <th>Số ngày thuê</th>
+                                <th>Tỷ lệ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data.chi_tiet %}
+                            <tr>
+                                <td>{{ row.stt }}</td>
+                                <td class="fw-semibold">Phòng {{ row.ma_phong }}</td>
+                                <td class="fw-bold text-primary">{{ row.so_ngay }} ngày</td>
+                                <td><span class="badge bg-success text-white">{{ row.ty_le }}%</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-secondary fw-bold">
+                                <td colspan="2" class="text-end">TỔNG SỐ NGÀY THUÊ:</td>
+                                <td class="text-primary fs-5">{{ data.tong_ngay }} ngày</td>
+                                <td>100%</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 mb-4">
+            <div class="card p-3 shadow-sm bg-white h-100">
+                <h5 class="fw-bold text-dark mb-3">Biểu đồ tỷ lệ mật độ (Chart.js)</h5>
+                <div style="position: relative; height: 320px;">
+                    <canvas id="chartMatDo"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const roomLabels = [{% for r in data.chi_tiet %}"Phòng {{ r.ma_phong }}",{% endfor %}];
+    const roomDays = [{% for r in data.chi_tiet %}{{ r.so_ngay }},{% endfor %}];
+
+    const ctx = document.getElementById('chartMatDo').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: roomLabels,
+            datasets: [{
+                data: roomDays,
+                backgroundColor: [
+                    '#3b82f6', '#ef4444', '#10b981', '#f59e0b',
+                    '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
