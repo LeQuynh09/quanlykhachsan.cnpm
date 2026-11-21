@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockup UI Trắng Đen - Quản Lý Khách Sạn</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #111;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .header-title p {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: #fff;
+            border: 2px solid #222;
+            padding: 10px 18px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            background: #222;
+            color: #fff;
+        }
+
+        .mockup-card {
+            display: none;
+            background: #fff;
+            border: 2px solid #222;
+            border-radius: 6px;
+            box-shadow: 4px 4px 0px #222;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .mockup-card.active {
+            display: block;
+        }
+
+        .mockup-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #222;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .mockup-title {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border: 1.5px solid #222;
+            border-radius: 50%;
+        }
+
+        /* Wireframe Elements */
+        .wire-nav {
+            border: 2px solid #222;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: #fafafa;
+        }
+
+        .wire-logo {
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #222;
+            padding: 4px 10px;
+        }
+
+        .wire-menu {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .wire-btn {
+            display: inline-block;
+            background: #fff;
+            border: 2px solid #222;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 3px;
+        }
+
+        .wire-btn-dark {
+            background: #222;
+            color: #fff;
+        }
+
+        .wire-input {
+            border: 2px solid #222;
+            padding: 8px 12px;
+            font-size: 13px;
+            background: #fff;
+            width: 100%;
+            border-radius: 3px;
+        }
+
+        .wire-box {
+            border: 2px solid #222;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            background: #fff;
+        }
+
+        .wire-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .wire-table th, .wire-table td {
+            border: 1.5px solid #222;
+            padding: 8px 10px;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        .wire-table th {
+            background: #eaeaea;
+            font-weight: bold;
+        }
+
+        .wire-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .wire-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .image-placeholder {
+            border: 2px dashed #444;
+            background: #fafafa;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge {
+            display: inline-block;
+            border: 1.5px solid #222;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 12px;
+        }
+
+        .note-text {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .watermark {
+            text-align: right;
+            font-size: 11px;
+            color: #888;
+            margin-top: 15px;
+            border-top: 1px dashed #ccc;
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-title">
+        <h1>Bản Vẽ Mockup UI Trắng Đen (Wireframe)</h1>
+        <p>Hệ Thống Quản Lý Khách Sạn - MESP Hotel | Đồ án Công nghệ phần mềm</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab(1)">1. Trang chủ (Home)</button>
+        <button class="tab-btn" onclick="showTab(2)">2. Đăng nhập (Login)</button>
+        <button class="tab-btn" onclick="showTab(3)">3. Đăng ký (Register)</button>
+        <button class="tab-btn" onclick="showTab(4)">4. Lập Phiếu Thuê Phòng</button>
+        <button class="tab-btn" onclick="showTab(5)">5. Hóa Đơn Thanh Toán</button>
+    </div>
+
+    <!-- MOCKUP 1: TRANG CHỦ -->
+    <div id="tab-1" class="mockup-card active">
+        <div class="mockup-header-bar">
+            <span class="mockup-title">UI-01: GIAO DIỆN TRANG CHỦ (HOMEPAGE)</span>
+            <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        </div>
+
+        <div class="wire-nav">
+            <div class="wire-logo">[MESP HOTEL]</div>
+            <div class="wire-menu">
+                <span>[Trang chủ]</span>
+                <span>[Loại phòng v]</span>
+                <span>[Giỏ đặt phòng (0)]</span>
+                <span>[Kênh Lễ tân]</span>
+            </div>
+            <div>
+                <button class="wire-btn">Đăng nhập</button>
+                <button class="wire-btn wire-btn-dark">Đăng ký</button>
+            </div>
+        </div>
+
+        <!-- Thanh Tìm kiếm và Lọc -->
+        <div class="wire-box" style="background: #fafafa;">
+            <div style="font-weight: bold; font-size: 13px; margin-bottom: 8px;">TÌM KIẾM VÀ BỘ LỌC PHÒNG</div>
+            <div style="display: grid; grid-template-columns: 2fr 1.5fr 1.5fr 1fr; gap: 10px;">
+                <input type="text" class="wire-input" placeholder="Nhập số phòng, ghi chú...">
+                <select class="wire-input">
+                    <option>-- Tất cả loại phòng --</option>
+                    <option>Phòng Đơn</option>
+                    <option>Phòng Đôi</option>
+                    <option>Phòng VIP</option>
+                </select>
+                <select class="wire-input">
+                    <option>-- Tình trạng --</option>
+                    <option>Còn trống</option>
+                    <option>Đang thuê</option>
+                </select>
+                <button class="wire-btn wire-btn-dark">Tìm kiếm</button>
+            </div>
+        </div>
+
+        <!-- Danh sách phòng -->
+        <div style="font-weight: bold; font-size: 14px; margin: 15px 0 10px 0;">DANH SÁCH PHÒNG KHÁCH SẠN (Hiển thị 6 phòng)</div>
+        <div class="wire-grid-3">
+            <!-- Room 1 -->
+            <div class="wire-box">
+                <div class="image-placeholder">[ HÌNH ẢNH PHÒNG 101 ]</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <span style="font-weight: bold; font-size: 15px;">Phòng 101</span>
+                    <span class="badge">Phòng Đơn</span>
+                </div>
+                <div style="font-size: 13px; font-weight: bold; margin-bottom: 4px;">Đơn giá: 150,000 đ/ngày</div>
+                <div style="font-size: 12px; color: #555; margin-bottom: 10px;">Tình trạng: <span class="badge" style="background:#222; color:#fff;">Còn trống</span></div>
+                <div style="display: flex; gap: 6px;">
+                    <button class="wire-btn" style="flex: 1;">Chi tiết</button>
+                    <button class="wire-btn wire-btn-dark" style="flex: 1;">+ Đặt phòng</button>
+                </div>
+            </div>
+
+            <!-- Room 2 -->
+            <div class="wire-box">
+                <div class="image-placeholder">[ HÌNH ẢNH PHÒNG 102 ]</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <span style="font-weight: bold; font-size: 15px;">Phòng 102</span>
+                    <span class="badge">Phòng Đôi</span>
+                </div>
+                <div style="font-size: 13px; font-weight: bold; margin-bottom: 4px;">Đơn giá: 350,000 đ/ngày</div>
+                <div style="font-size: 12px; color: #555; margin-bottom: 10px;">Tình trạng: <span class="badge" style="background:#222; color:#fff;">Còn trống</span></div>
+                <div style="display: flex; gap: 6px;">
+                    <button class="wire-btn" style="flex: 1;">Chi tiết</button>
+                    <button class="wire-btn wire-btn-dark" style="flex: 1;">+ Đặt phòng</button>
+                </div>
+            </div>
+
+            <!-- Room 3 -->
+            <div class="wire-box">
+                <div class="image-placeholder">[ HÌNH ẢNH PHÒNG 103 ]</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <span style="font-weight: bold; font-size: 15px;">Phòng 103</span>
+                    <span class="badge">Phòng VIP</span>
+                </div>
+                <div style="font-size: 13px; font-weight: bold; margin-bottom: 4px;">Đơn giá: 600,000 đ/ngày</div>
+                <div style="font-size: 12px; color: #555; margin-bottom: 10px;">Tình trạng: <span class="badge">Đang thuê</span></div>
+                <div style="display: flex; gap: 6px;">
+                    <button class="wire-btn" style="flex: 1;">Chi tiết</button>
+                    <button class="wire-btn" style="flex: 1; border-color:#888; color:#888;" disabled>Hết phòng</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phân trang -->
+        <div style="display: flex; justify-content: center; gap: 6px; margin-top: 20px;">
+            <button class="wire-btn">&laquo; Trước</button>
+            <button class="wire-btn wire-btn-dark">1</button>
+            <button class="wire-btn">2</button>
+            <button class="wire-btn">3</button>
+            <button class="wire-btn">Sau &raquo;</button>
+        </div>
+        <div class="watermark">Mockup Wireframe - MESP Hotel | Trang chủ</div>
+    </div>
+
+    <!-- MOCKUP 2: ĐĂNG NHẬP -->
+    <div id="tab-2" class="mockup-card">
+        <div class="mockup-header-bar">
+            <span class="mockup-title">UI-02: GIAO DIỆN ĐĂNG NHẬP (LOGIN)</span>
+            <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        </div>
+
+        <div style="max-width: 420px; margin: 30px auto;" class="wire-box">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="font-size: 28px; margin-bottom: 6px;">[ ICON KHÓA ]</div>
+                <h3 style="font-size: 18px; text-transform: uppercase;">ĐĂNG NHẬP HỆ THỐNG</h3>
+                <p style="font-size: 12px; color: #666;">Dành cho Khách hàng, Lễ tân và Quản trị viên</p>
+            </div>
+
+            <div class="form-group">
+                <label>Tên đăng nhập:</label>
+                <input type="text" class="wire-input" placeholder="Nhập tên đăng nhập...">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label>Mật khẩu:</label>
+                <input type="password" class="wire-input" placeholder="Nhập mật khẩu...">
+            </div>
+
+            <button class="wire-btn wire-btn-dark" style="width: 100%; padding: 10px; font-size: 14px; margin-bottom: 15px;">
+                ĐĂNG NHẬP
+            </button>
+
+            <div style="text-align: center; font-size: 13px; border-top: 1px dashed #999; padding-top: 12px;">
+                Chưa có tài khoản? <span style="font-weight: bold; text-decoration: underline; cursor: pointer;">Đăng ký ngay</span>
+            </div>
+        </div>
+        <div class="watermark">Mockup Wireframe - MESP Hotel | Đăng nhập</div>
+    </div>
+
+    <!-- MOCKUP 3: ĐĂNG KÝ -->
+    <div id="tab-3" class="mockup-card">
+        <div class="mockup-header-bar">
+            <span class="mockup-title">UI-03: GIAO DIỆN ĐĂNG KÝ TÀI KHOẢN (REGISTER)</span>
+            <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        </div>
+
+        <div style="max-width: 580px; margin: 20px auto;" class="wire-box">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h3 style="font-size: 18px; text-transform: uppercase;">ĐĂNG KÝ TÀI KHOẢN KHÁCH HÀNG</h3>
+                <p style="font-size: 12px; color: #666;">Điền đầy đủ thông tin để hoàn tất tạo tài khoản</p>
+            </div>
+
+            <div class="wire-grid-2">
+                <div class="form-group">
+                    <label>Họ và tên khách hàng (*):</label>
+                    <input type="text" class="wire-input" placeholder="Ví dụ: Nguyễn Văn A">
+                </div>
+                <div class="form-group">
+                    <label>Số CMND / CCCD (*):</label>
+                    <input type="text" class="wire-input" placeholder="Nhập số căn cước...">
+                </div>
+            </div>
+
+            <div class="wire-grid-2">
+                <div class="form-group">
+                    <label>Số điện thoại (*):</label>
+                    <input type="text" class="wire-input" placeholder="Ví dụ: 0912345678">
+                </div>
+                <div class="form-group">
+                    <label>Loại khách hàng (*):</label>
+                    <select class="wire-input">
+                        <option>Nội địa (Hệ số 1.0)</option>
+                        <option>Nước ngoài (Hệ số 1.5)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Địa chỉ liên lạc (*):</label>
+                <input type="text" class="wire-input" placeholder="Số nhà, tên đường, quận/huyện, tỉnh/thành phố">
+            </div>
+
+            <div style="border-top: 1.5px dashed #aaa; margin: 15px 0;"></div>
+
+            <div class="form-group">
+                <label>Tên đăng nhập (*):</label>
+                <input type="text" class="wire-input" placeholder="Chọn tên tài khoản đăng nhập...">
+            </div>
+
+            <div class="wire-grid-2">
+                <div class="form-group">
+                    <label>Mật khẩu (*):</label>
+                    <input type="password" class="wire-input" placeholder="Nhập mật khẩu...">
+                </div>
+                <div class="form-group">
+                    <label>Xác nhận mật khẩu (*):</label>
+                    <input type="password" class="wire-input" placeholder="Nhập lại mật khẩu...">
+                </div>
+            </div>
+
+            <button class="wire-btn wire-btn-dark" style="width: 100%; padding: 10px; font-size: 14px; margin-top: 10px; margin-bottom: 12px;">
+                TẠO TÀI KHOẢN MỚI
+            </button>
+
+            <div style="text-align: center; font-size: 13px;">
+                Đã có tài khoản? <span style="font-weight: bold; text-decoration: underline; cursor: pointer;">Đăng nhập tại đây</span>
+            </div>
+        </div>
+        <div class="watermark">Mockup Wireframe - MESP Hotel | Đăng ký</div>
+    </div>
+
+    <!-- MOCKUP 4: PHIẾU THUÊ PHÒNG -->
+    <div id="tab-4" class="mockup-card">
+        <div class="mockup-header-bar">
+            <span class="mockup-title">UI-04: LẬP PHIẾU THUÊ PHÒNG (DÀNH CHO LỄ TÂN)</span>
+            <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        </div>
+
+        <!-- Tra cứu đặt phòng trước -->
+        <div class="wire-box" style="background: #fafafa; border-style: dashed;">
+            <div style="font-weight: bold; font-size: 13px; margin-bottom: 6px;">[TRA CỨU KHÁCH HÀNG ĐÃ ĐẶT PHÒNG TRƯỚC]</div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" class="wire-input" placeholder="Nhập Họ tên hoặc SĐT khách để tìm phiếu đặt phòng..." style="flex: 1;">
+                <button class="wire-btn">Tra cứu</button>
+            </div>
+            <div class="note-text">* Nếu khách đã đặt phòng trước, chọn phiếu đặt để hệ thống tự động điền các thông tin bên dưới.</div>
+        </div>
+
+        <!-- Form lập phiếu thuê -->
+        <div class="wire-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1.5px solid #222; padding-bottom: 8px;">
+                <span style="font-weight: bold; font-size: 16px;">PHIẾU THUÊ PHÒNG</span>
+                <span style="font-size: 12px;">Ngày lập: 26/11/2026</span>
+            </div>
+
+            <div class="wire-grid-2">
+                <div class="form-group">
+                    <label>Chọn phòng thuê (*):</label>
+                    <select class="wire-input">
+                        <option>Phòng 101 (Phòng Đơn - 150,000 đ/ngày)</option>
+                        <option>Phòng 102 (Phòng Đôi - 350,000 đ/ngày)</option>
+                        <option>Phòng 201 (Phòng VIP - 600,000 đ/ngày)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Số lượng khách ở (Tối đa 3 khách) (*):</label>
+                    <select class="wire-input">
+                        <option>1 khách</option>
+                        <option selected>2 khách (Đúng tiêu chuẩn)</option>
+                        <option>3 khách (Phụ thu 25%)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="wire-grid-2">
+                <div class="form-group">
+                    <label>Ngày nhận phòng (*):</label>
+                    <input type="date" class="wire-input" value="2026-11-26">
+                </div>
+                <div class="form-group">
+                    <label>Số ngày ở dự kiến (*):</label>
+                    <input type="number" class="wire-input" value="3" min="1">
+                </div>
+            </div>
+
+            <!-- Bảng danh sách khách trong phòng -->
+            <div style="margin-top: 15px;">
+                <div style="font-weight: bold; font-size: 13px; margin-bottom: 5px;">DANH SÁCH CHI TIẾT KHÁCH HÀNG Ở TRONG PHÒNG:</div>
+                <table class="wire-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px; text-align: center;">STT</th>
+                            <th>Họ tên khách hàng</th>
+                            <th style="width: 140px;">Loại khách</th>
+                            <th style="width: 140px;">Số CMND / CCCD</th>
+                            <th>Địa chỉ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;">1</td>
+                            <td><input type="text" class="wire-input" value="Nguyễn Văn A"></td>
+                            <td>
+                                <select class="wire-input">
+                                    <option selected>Nội địa</option>
+                                    <option>Nước ngoài</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="wire-input" value="079201004567"></td>
+                            <td><input type="text" class="wire-input" value="Hà Nội"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;">2</td>
+                            <td><input type="text" class="wire-input" value="John Smith"></td>
+                            <td>
+                                <select class="wire-input">
+                                    <option>Nội địa</option>
+                                    <option selected>Nước ngoài</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="wire-input" value="USA-9876543"></td>
+                            <td><input type="text" class="wire-input" value="California, USA"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; color: #888;">3</td>
+                            <td><input type="text" class="wire-input" placeholder="(Khách thứ 3 nếu có)"></td>
+                            <td>
+                                <select class="wire-input">
+                                    <option>Nội địa</option>
+                                    <option>Nước ngoài</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="wire-input" placeholder="CMND..."></td>
+                            <td><input type="text" class="wire-input" placeholder="Địa chỉ..."></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="note-text">
+                    Quy định: Phòng tối đa 3 khách. Nếu có khách nước ngoài hệ số tính x1.5 khi thanh toán.
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button class="wire-btn">Làm lại</button>
+                <button class="wire-btn wire-btn-dark" style="padding: 10px 24px;">XÁC NHẬN LẬP PHIẾU THUÊ</button>
+            </div>
+        </div>
+        <div class="watermark">Mockup Wireframe - MESP Hotel | Lập phiếu thuê phòng</div>
+    </div>
+
+    <!-- MOCKUP 5: HÓA ĐƠN THANH TOÁN -->
+    <div id="tab-5" class="mockup-card">
+        <div class="mockup-header-bar">
+            <span class="mockup-title">UI-05: HÓA ĐƠN THANH TOÁN TIỀN PHÒNG</span>
+            <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        </div>
+
+        <div style="max-width: 680px; margin: 15px auto;" class="wire-box">
+            <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #222; padding-bottom: 12px;">
+                <h2 style="font-size: 20px; text-transform: uppercase; letter-spacing: 1px;">HÓA ĐƠN THANH TOÁN</h2>
+                <div style="font-size: 13px; margin-top: 4px;">Khách Sạn MESP HOTEL - TP. Hồ Chí Minh</div>
+                <div style="font-size: 12px; color: #555;">Số HĐ: #HD2026-0089 | Ngày in: 26/11/2026 14:30</div>
+            </div>
+
+            <!-- Thông tin khách & phòng -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; font-size: 13px;">
+                <div>
+                    <div><strong>Họ tên khách đại diện:</strong> Nguyễn Văn A</div>
+                    <div style="margin-top: 4px;"><strong>CMND/CCCD:</strong> 079201004567</div>
+                    <div style="margin-top: 4px;"><strong>Địa chỉ:</strong> Hà Nội</div>
+                </div>
+                <div>
+                    <div><strong>Phòng thuê:</strong> Phòng 102 (Loại: Đôi)</div>
+                    <div style="margin-top: 4px;"><strong>Ngày nhận phòng:</strong> 23/11/2026</div>
+                    <div style="margin-top: 4px;"><strong>Ngày trả phòng:</strong> 26/11/2026 (3 ngày)</div>
+                </div>
+            </div>
+
+            <!-- Bảng diễn giải chi phí -->
+            <table class="wire-table">
+                <thead>
+                    <tr>
+                        <th>Khoản mục thanh toán</th>
+                        <th style="width: 100px; text-align: center;">Số lượng</th>
+                        <th style="width: 130px; text-align: right;">Đơn giá</th>
+                        <th style="width: 140px; text-align: right;">Thành tiền (VNĐ)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <strong>Tiền thuê phòng (3 ngày)</strong><br>
+                            <small style="color: #666;">Đơn giá phòng đôi tiêu chuẩn 2 khách</small>
+                        </td>
+                        <td style="text-align: center;">3 ngày</td>
+                        <td style="text-align: right;">350,000 đ</td>
+                        <td style="text-align: right;">1,050,000 đ</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Phụ thu khách thứ 3</strong><br>
+                            <small style="color: #666;">Tỷ lệ phụ thu quy định: +25% đơn giá</small>
+                        </td>
+                        <td style="text-align: center;">1 khách</td>
+                        <td style="text-align: right;">+25%</td>
+                        <td style="text-align: right;">+262,500 đ</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Hệ số khách nước ngoài</strong><br>
+                            <small style="color: #666;">Phòng có khách nước ngoài (John Smith)</small>
+                        </td>
+                        <td style="text-align: center;">1 người</td>
+                        <td style="text-align: right;">Hệ số x 1.5</td>
+                        <td style="text-align: right;">x 1.5</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr style="background: #fafafa; font-weight: bold;">
+                        <td colspan="3" style="text-align: right; font-size: 14px;">TỔNG CỘNG THANH TOÁN:</td>
+                        <td style="text-align: right; font-size: 16px; border: 2px solid #222;">1,968,750 đ</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div style="font-size: 12px; margin-top: 8px; font-style: italic;">
+                * Công thức tính: Thành tiền = Đơn giá x Số ngày x (1 + Phụ thu) x Hệ số loại khách
+            </div>
+
+            <!-- Chữ ký -->
+            <div style="display: flex; justify-content: space-between; margin-top: 35px; text-align: center; font-size: 13px;">
+                <div style="width: 200px;">
+                    <strong>Khách hàng ký tên</strong><br>
+                    <span style="font-size: 11px; color:#666;">(Ký và ghi rõ họ tên)</span>
+                    <div style="height: 50px;"></div>
+                    <div>Nguyễn Văn A</div>
+                </div>
+                <div style="width: 200px;">
+                    <strong>Nhân viên thu ngân</strong><br>
+                    <span style="font-size: 11px; color:#666;">(Ký và xác nhận thanh toán)</span>
+                    <div style="height: 50px;"></div>
+                    <div>Lễ tân: Nguyễn Văn Thuận</div>
+                </div>
+            </div>
+
+            <!-- Nút hành động -->
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 30px; border-top: 1.5px dashed #aaa; padding-top: 15px;">
+                <button class="wire-btn" onclick="window.print()">[ IN HÓA ĐƠN ]</button>
+                <button class="wire-btn wire-btn-dark">[ XÁC NHẬN ĐÃ THU TIỀN ]</button>
+            </div>
+        </div>
+        <div class="watermark">Mockup Wireframe - MESP Hotel | Hóa đơn thanh toán</div>
+    </div>
+</div>
+
+<script>
+    function showTab(tabIndex) {
+        // Hide all cards
+        const cards = document.querySelectorAll('.mockup-card');
+        cards.forEach(c => c.classList.remove('active'));
+
+        // Deactivate all buttons
+        const btns = document.querySelectorAll('.tab-btn');
+        btns.forEach(b => b.classList.remove('active'));
+
+        // Activate selected
+        document.getElementById('tab-' + tabIndex).classList.add('active');
+        btns[tabIndex - 1].classList.add('active');
+    }
+</script>
+
+</body>
+</html>
